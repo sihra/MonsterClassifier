@@ -12,9 +12,6 @@ var app=Express();
 app.use(cors());
 
 
-
-
-
 var CONNECTION_STRING="mongodb+srv://"+config.username+":"+config.password+"@cluster0.0s6fyy3.mongodb.net/?retryWrites=true&w=majority";
 console.log(CONNECTION_STRING);
 
@@ -39,3 +36,15 @@ app.get('/humans',(request,response)=>{
         response.send(result);
     });
 })
+
+app.post('/postMonster',multer().none(),(request,response)=>{
+    db.collection("Human").count({},function(error,numOfDocs)=>{
+        db.collection("Human").insertOne({
+            id:(numOfDocs+1).toString(),
+            classification:request.body.classification,
+            image_url: request.body.url
+        });
+        response.json("Added Succesfully");
+    })
+})
+
