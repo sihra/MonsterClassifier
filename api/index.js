@@ -38,11 +38,12 @@ app.get('/humans',(request,response)=>{
 })
 
 app.post('/postMonster',multer().none(),(request,response)=>{
-    db.collection("Human").count({},function(error,numOfDocs)=>{
+    console.log(request.body.classification);
+    db.collection("Human").count({},function(error,numOfDocs){
         db.collection("Human").insertOne({
             id:(numOfDocs+1).toString(),
             classification:request.body.classification,
-            image_url: request.body.url
+            image_url: request.body.image
         });
         response.json("Added Succesfully");
     })
