@@ -132,7 +132,6 @@ dist
 config.js
 
 .DS_STORE
-node_modules
 scripts/flow/*/.flowconfig
 .flowconfig
 *~
