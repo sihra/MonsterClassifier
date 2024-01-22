@@ -1,7 +1,9 @@
 import './App.css';
 import { Component } from 'react';
-class App extends Component {
+import Button from '@mui/material/Button';
 
+
+class App extends Component {
 
   constructor(props) {
     // Initialize parent constructor as well
@@ -14,10 +16,6 @@ class App extends Component {
   }
 
   API_URL = "http://localhost:5038"
-
-  componentDidMount() {
-    this.refreshPage();
-  }
 
   async handleSubmit(e) {
     //const [count, setCount] = useState(0);
@@ -41,12 +39,10 @@ class App extends Component {
       body: data,
     }).then(res => res.json()).then((result) => {
       //this.status = (result.statusText)
-      this.setState({ status: "... Detecting Monster UPDATE ..." })
-      alert(result);
+      this.setState({ status: result })
       //this.refreshPage();
     })
     console.log("Submitted")
-    alert("End of method");
   }
 
   async handleFileChange(e) {
@@ -96,7 +92,7 @@ class App extends Component {
       body: data,
     }).then(res => res.json()).then((result) => {
       alert(result);
-      this.refreshPage();
+      //this.refreshPage();
     })
   }
 
@@ -112,24 +108,28 @@ class App extends Component {
       body: data,
     }).then(res => res.json()).then((result) => {
       alert(result);
-      this.refreshPage();
+      //this.refreshPage();
     })
   }
 
-  async refreshPage() {
-    fetch(this.API_URL + "/Humans").then(response => response.json())
-      .then(data => {
-        this.setState({ urls: data })
-      })
-  }
+  // async refreshPage() {
+  //   fetch(this.API_URL + "/Humans").then(response => response.json())
+  //     .then(data => {
+  //       this.setState({ urls: data })
+  //     })
+  // }
   // imageUpload = File Upload for photo
 
   render() {
-    const { urls, monsterImage, status } = this.state
+    const { monsterImage, status } = this.state
     return (
       <div className="App">
-        <h2>Reformatted Monster Classifier</h2>
-        <h1>Upload to server</h1>
+        <h1>Monster Classifier</h1>
+        <h4>This was built using fast.ai...</h4>
+
+        <h4>Please upload an image that you'd like to see classified as a monster or not.</h4>
+
+        <h4>Due to limited time, the model has only been trained for .. with ....</h4>
 
         {monsterImage.preview && <img src={monsterImage.preview} width='100' height='100' />}
 
@@ -138,26 +138,12 @@ class App extends Component {
           <input type='file' name='file' onChange={(event) => { this.handleFileChange(event); }
           }></input>
 
-          <button type='submit'>Submit</button>
+        
+          <Button variant="text" type='submit'>Submit</Button>
 
         </form>
         {status && <h4>{status}</h4>}
         <h4>{status}</h4>
-
-        <h2>Gurdev</h2>
-
-        <h2>Monster Classifier</h2>
-
-        <input id="imageUpload" />&nbsp;
-        <button onClick={() => this.humanClick()}>Human</button>
-        <button onClick={() => this.monsterClick()}>Monster</button>
-
-        {urls.map(urlm =>
-          <p>
-            <b>URL: {urlm.image_url}</b>&nbsp;
-            <b>Classification: {urlm.classification}</b>
-          </p>)
-        }
       </div>
     );
   }
