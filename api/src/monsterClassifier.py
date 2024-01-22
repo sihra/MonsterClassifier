@@ -2,25 +2,30 @@
 from fastai.vision.all import *
 import torch
 import PIL
-print('Hello World')
+import sys
+import json
 
-def isMonster(x): return x[0].isupper()
+#print('Hello World')
 
-print('Hello mload learner')
-learn = load_learner('model.pkl')
+#print('Hello mload learner')
+learn = load_learner('/Users/gurdevsihra/Projects/MonsterClassifier/api/src/model.pkl')
 
 categories = ('Human','Monster')
+
 def classify_image(img):
-    print('Hello from classify image')
+    #print('Hello from classify image')
     pred,idx,probs = learn.predict(img)
     return dict(zip(categories,map(float,probs)))
 
-im = PILImage.create('gurdev.png')
+im = PILImage.create('/Users/gurdevsihra/Projects/MonsterClassifier/api/src/gurdev.png')
 im.thumbnail((192,192))
 im
 #im = PIL.Image.new('gurdev.png',size=(200, 200))
 #im.show()
 
-print(classify_image(im))
+res = classify_image(im)
 
-print('Hello from python')
+print(res)
+
+sys.stdout.flush()
+

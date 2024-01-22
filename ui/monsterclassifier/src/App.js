@@ -41,11 +41,12 @@ class App extends Component {
       body: data,
     }).then(res => res.json()).then((result) => {
       //this.status = (result.statusText)
-      this.setState({ status: result.statusText })
-      //alert(result);
+      this.setState({ status: "... Detecting Monster UPDATE ..." })
+      alert(result);
       //this.refreshPage();
     })
     console.log("Submitted")
+    alert("End of method");
   }
 
   async handleFileChange(e) {

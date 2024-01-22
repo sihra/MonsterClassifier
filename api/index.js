@@ -2,6 +2,7 @@ var config = require('./config');
 var Express = require("express");
 const mongodb = require("mongodb");
 const path = require("path");
+//const spawn = require("child_process");
 var MongoClient = mongodb.MongoClient;
 // Allows any traffic from any IP address
 var cors = require("cors");
@@ -66,9 +67,18 @@ const checkFileType = function(file,cb) {
     } else {
         cb("Error! You can only upload images! (,,>﹏<,,)")
     }
-
 }
 
+const checkMonster = function() {
+    console.log("in checkmonster")
+    const spawn = require("child_process").spawn;
+    const pythonProcess = spawn('python',["src/monsterClassifier.py"]);
+
+    pythonProcess.stdout.on('data', (data) => {
+        console.log("print me python")
+        console.log(data);
+       });
+}
 
 
 app.listen(5038, () => {
@@ -99,14 +109,69 @@ app.post('/postMonster', multer().none(), (request, response) => {
     })
 })
 
-app.post("/postMe", upload.single("file"), (req, res) => {
+app.post("/postMe", upload.single("file"), async function(req, res){
 
-    console.log("Ouch! You hit me!");
-    console.log(res);
-    if (req.file) {
-      res.send("Single file uploaded successfully");
-    } else {
-      res.status(400).send("Please upload a valid image");
+    try {
+        const { spawn } = require('child_process');
+        const pythonProcess = await spawn('python3', ['./src/monsterClassifier.py']);
+    
+        pythonProcess.stdout.on('data', async (data) => {
+    
+            // const deferred = new Promise();
+    
+            // setTimeout( () => {
+            //     console.log( "resolving" );
+            //     deferred.resolve();
+            // }, 1000 );
+    
+            modelResults = data.toString();
+            console.log(" Found data " + modelResults);
+            if (modelResults.includes("Human")) {
+                humanProbs = modelResults.substring(modelResults.indexOf(':')+2,modelResults.lastIndexOf(','));
+                monsterProbs = modelResults.substring(modelResults.lastIndexOf(':')+2,modelResults.lastIndexOf('}'));
+                console.log("Human Probability: " + humanProbs)
+                console.log("Monster Probability: " + monsterProbs)
+                probability = {};
+                probability.Human = humanProbs;
+                probability.Monster = monsterProbs;
+                console.log("Final Probability: " + probability)
+                console.log(JSON.stringify(data.toString()))
+                //res.json(data.toString())
+                res.write(JSON.stringify(data.toString()))
+                //res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end();
+            }
+     
+        });
+    
+        console.log("Result " + res)
+    } catch (e) {
+        res.end(e.message || e.toString());
     }
-    res.json("Uploaded image successfully");
+    console.log("Ouch! You hit me!!");
+
+
+    // const spawn = require("child_process").spawn;
+    // const pythonProcess = spawn('python',["src/monsterClassifier.py"]);
+
+    // pythonProcess.stdout.on('data', (data) => {
+    //     console.log("print me python")
+    //     console.log(data.toString());
+    //     console.log(data);
+    //    });
+
+    console.log("post end")
+
+    //console.log(res);
+
+
+    // if (req.file) {
+    //   res.send("Single file uploaded successfully");
+    // } else {
+    //   res.status(400).send("Please upload a valid image");
+    // }
+
+
+    // we want to return human or monster probability
+    //res.json("Uploaded image successfully");
   });
