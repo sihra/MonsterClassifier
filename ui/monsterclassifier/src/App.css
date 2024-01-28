@@ -36,3 +36,27 @@
     transform: rotate(360deg);
   }
 }
+
+.box {
+  display: flex;
+  flex-direction: column;
+}
+
+#header {
+  background:url("/Users/gurdevsihra/Projects/MonsterClassifier/ui/monsterclassifier/public/webpage.png");
+  width: 100%;
+  background-position: center;
+  padding: 1px 1px;
+  overflow: hidden;
+  
+}
+
+p {
+  color: white;
+  font-family: 'Horror Type',century-gothic sans-serif;          
+  font-size: 100px;                  
+  text-align: center;
+  padding: 0px 0px;
+  border: none;
+  margin: 0px 0px;
+}

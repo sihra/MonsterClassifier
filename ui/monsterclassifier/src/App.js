@@ -1,6 +1,24 @@
 import './App.css';
 import { Component } from 'react';
+import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+
+import { MantineProvider, FileButton, FileInput, createTheme, Group, Text } from '@mantine/core';
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
+
+
 
 
 class App extends Component {
@@ -12,6 +30,7 @@ class App extends Component {
       urls: [],
       monsterImage: { preview: "", data: ""},
       status: "",
+      file:""
     }
   }
 
@@ -20,6 +39,8 @@ class App extends Component {
   async handleSubmit(e) {
     //const [count, setCount] = useState(0);
     e.preventDefault()
+
+    alert(e)
    
     const data = new FormData();
 
@@ -47,6 +68,7 @@ class App extends Component {
 
   async handleFileChange(e) {
     console.log("File Change")
+    //alert(JSON.stringify(e))
     // const img = {
     //   preview: URL.createObjectURL(e.target.files[0]),
     //   data: e.target.files[0],
@@ -54,6 +76,7 @@ class App extends Component {
     // this.setState({ monsterImage: img })
 
 
+    this.file = "peep";
 
     // this.setState((status) =>{
     //   return "testing fured"
@@ -121,10 +144,20 @@ class App extends Component {
   // imageUpload = File Upload for photo
 
   render() {
-    const { monsterImage, status } = this.state
+    const { monsterImage, status, file } = this.state
     return (
+      
       <div className="App">
-        <h1>Monster Classifier</h1>
+        <MantineProvider theme={{ colorScheme: "dark" }}>
+          <style>@import url('https://fonts.cdnfonts.com/css/horror-type');</style>
+
+          <div class="box">
+            
+            
+            
+        <div id="header">
+          <p><span>Monster Classifer</span></p>
+        </div>
         <h4>This was built using fast.ai...</h4>
 
         <h4>Please upload an image that you'd like to see classified as a monster or not.</h4>
@@ -134,17 +167,76 @@ class App extends Component {
         {monsterImage.preview && <img src={monsterImage.preview} width='100' height='100' />}
 
         <hr></hr>
-        <form onSubmit={(event) => {this.handleSubmit(event)} }>
-          <input type='file' name='file' onChange={(event) => { this.handleFileChange(event); }
-          }></input>
 
         
-          <Button variant="text" type='submit'>Submit</Button>
 
-        </form>
+       
+
+
+
+        <form onSubmit={(event) => {this.handleSubmit(event)} }>
+
+        <label className={Button.classes}>
+        <input type='file' name='file' onChange={(event) => { this.handleFileChange(event); }
+          }/>
+        </label>
+          
+
+          <Button variant="text" type='submit' startIcon={<CloudUploadIcon />}>Submit</Button>
+          </form>
+
+          <hr></hr>
+          <form onSubmit={(event) => {this.handleSubmit(event)} }>
+            <FileButton onChange={(event) => { this.handleFileChange(event); }} accept="image/png,image/jpeg">
+            {(props) => <Button {...props}>Upload image</Button>}
+          </FileButton>
+
+          </form>
+
+          
+
+
+        <FileInput type='file' name='file' onChange={(event) => { 
+          this.handleFileChange(event); 
+        }
+          }>
+ <input type='file' name='file' onChange={(event) => { this.handleFileChange(event); }
+          }></input>
+
+          </FileInput>
+
+          </div>
+
+          <hr></hr>
+
+          <Button variant="text" type='submit' startIcon={<CloudUploadIcon />}>Submit</Button>
+
+
+
+          <FileButton type='file' name='file' onChange={(event) => { this.handleFileChange(event); }
+            } accept="image/png,image/jpeg">
+            {(props) => <Button {...props}>Upload image</Button>}
+          </FileButton>
+
+
+      {file && (
+        <Text size="sm" ta="center" mt="sm">
+          Picked file: {file}
+        </Text>
+      )}
+
+
+
+
+        
+
+
+
         {status && <h4>{status}</h4>}
         <h4>{status}</h4>
+        </MantineProvider>
       </div>
+     
     );
   }
 }
