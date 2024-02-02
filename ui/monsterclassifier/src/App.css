@@ -59,13 +59,17 @@
   margin-bottom: 1em;
   p {
     color: white;
-    font-family: 'Horror Type' Trebuchet MS ;          
+    font-family: 'Horror Type', Trebuchet MS, sans-serif ;          
     font-size: 100px;                  
     text-align: center;
     padding: 0px 0px;
     border: none;
     margin: 0px 0px;
   }
+}
+
+.center_me {
+  align-items: center; justify-content: center;
 }
 
 /* unvisited link */
@@ -83,9 +87,4 @@ a:visited {
 /* mouse over link */
 a:hover {
   text-decoration: underline;
-}
-
-
-.center_me {
-  align-items: center; justify-content: center;
 }
