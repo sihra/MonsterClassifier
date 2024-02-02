@@ -37,9 +37,17 @@
   }
 }
 
-.box {
+.flex_box {
   display: flex;
   flex-direction: column;
+
+  .flex_item {
+    display: flex;
+    margin-right: 7em;
+    margin-left: 7em;
+    align-content: flex-start;
+    text-align: left;
+ }
 }
 
 #header {
@@ -48,15 +56,36 @@
   background-position: center;
   padding: 1px 1px;
   overflow: hidden;
-  
+  margin-bottom: 1em;
+  p {
+    color: white;
+    font-family: 'Horror Type' Trebuchet MS ;          
+    font-size: 100px;                  
+    text-align: center;
+    padding: 0px 0px;
+    border: none;
+    margin: 0px 0px;
+  }
 }
 
-p {
-  color: white;
-  font-family: 'Horror Type',century-gothic sans-serif;          
-  font-size: 100px;                  
-  text-align: center;
-  padding: 0px 0px;
-  border: none;
-  margin: 0px 0px;
+/* unvisited link */
+a:link {
+  color: #1976d2;
+  text-decoration: none
+}
+
+/* visited link */
+a:visited {
+  color: #1976d2;
+  text-decoration: none
+}
+
+/* mouse over link */
+a:hover {
+  text-decoration: underline;
+}
+
+
+.center_me {
+  align-items: center; justify-content: center;
 }

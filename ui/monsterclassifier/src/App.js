@@ -3,23 +3,13 @@ import { Component } from 'react';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { withRouter, connect, Link } from "react-router-dom";
 
-import { MantineProvider, FileButton, FileInput, createTheme, Group, Text } from '@mantine/core';
+import { Loader, MantineProvider, LoadingOverlay } from '@mantine/core';
 
-const VisuallyHiddenInput = styled('input')({
-  clip: 'rect(0 0 0 0)',
-  clipPath: 'inset(50%)',
-  height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
-  bottom: 0,
-  left: 0,
-  whiteSpace: 'nowrap',
-  width: 1,
-});
-
-
-
+function Demo() {
+  return <Loader size={30} />;
+}
 
 class App extends Component {
 
@@ -28,9 +18,9 @@ class App extends Component {
     super(props);
     this.state = {
       urls: [],
-      monsterImage: { preview: "", data: ""},
+      monsterImage: { preview: "", data: "" },
       status: "",
-      file:""
+      file: ""
     }
   }
 
@@ -40,8 +30,8 @@ class App extends Component {
     //const [count, setCount] = useState(0);
     e.preventDefault()
 
-    alert(e)
-   
+    //alert(e)
+
     const data = new FormData();
 
     const peep = this.status
@@ -49,9 +39,9 @@ class App extends Component {
     //alert({peep})
 
     //alert("hi");
-    
+
     data.append("file", this.state.monsterImage.data)
-    
+
 
     this.setState({ status: "... Detecting Monster ..." })
 
@@ -89,51 +79,51 @@ class App extends Component {
     this.setState({
       monsterImage: {
         //...this.state.monsterImage, 
-        preview: URL.createObjectURL(e.target.files[0]), 
+        preview: URL.createObjectURL(e.target.files[0]),
         data: e.target.files[0]
-        }
+      }
     },
-    function() {
-      console.log("setState completed", this.state)
-    });
+      function () {
+        console.log("setState completed", this.state)
+      });
 
-    
+
     //this.monsterImage = img
     console.log("File Change")
 
   }
 
-  async humanClick() {
-    var image = document.getElementById("imageUpload").value;
-    console.log("Uploading Image " + image)
-    const data = new FormData();
-    data.append("image", image);
-    data.append("classification", "human");
+  // async humanClick() {
+  //   var image = document.getElementById("imageUpload").value;
+  //   console.log("Uploading Image " + image)
+  //   const data = new FormData();
+  //   data.append("image", image);
+  //   data.append("classification", "human");
 
-    fetch(this.API_URL + "/postMonster", {
-      method: "POST",
-      body: data,
-    }).then(res => res.json()).then((result) => {
-      alert(result);
-      //this.refreshPage();
-    })
-  }
+  //   fetch(this.API_URL + "/postMonster", {
+  //     method: "POST",
+  //     body: data,
+  //   }).then(res => res.json()).then((result) => {
+  //     alert(result);
+  //     //this.refreshPage();
+  //   })
+  // }
 
-  async monsterClick() {
-    var image = document.getElementById("imageUpload").value;
-    console.log("Uploading Image " + image)
-    const data = new FormData();
-    data.append("image", image);
-    data.append("classification", "monster");
+  // async monsterClick() {
+  //   var image = document.getElementById("imageUpload").value;
+  //   console.log("Uploading Image " + image)
+  //   const data = new FormData();
+  //   data.append("image", image);
+  //   data.append("classification", "monster");
 
-    fetch(this.API_URL + "/postMonster", {
-      method: "POST",
-      body: data,
-    }).then(res => res.json()).then((result) => {
-      alert(result);
-      //this.refreshPage();
-    })
-  }
+  //   fetch(this.API_URL + "/postMonster", {
+  //     method: "POST",
+  //     body: data,
+  //   }).then(res => res.json()).then((result) => {
+  //     alert(result);
+  //     //this.refreshPage();
+  //   })
+  // }
 
   // async refreshPage() {
   //   fetch(this.API_URL + "/Humans").then(response => response.json())
@@ -146,99 +136,75 @@ class App extends Component {
   render() {
     const { monsterImage, status, file } = this.state
     return (
-      
+
       <div className="App">
-        <MantineProvider theme={{ colorScheme: "dark" }}>
+        <MantineProvider withGlobalStyles withNormalizeCSS><Loader size={43} />
           <style>@import url('https://fonts.cdnfonts.com/css/horror-type');</style>
 
-          <div class="box">
+          <div class="flex_box">
+
+            <div id="header">
+              <p><span>Monster Classifier</span></p>
+            </div>
+
+            <div class="flex_item">
+              <h5>
+               Monster Classifier uses 
+              </h5>
+              </div>
             
+            <div class="flex_item">
+              <p>
+                This was built using <a href="https://course.fast.ai/Lessons/lesson1.html">Fast.ai's Practical Deep Learning For Coders</a> Lesson 1.
+                I've followed along with the classes by creating <a href="https://www.kaggle.com/gsihra">Kaggle Notebooks</a> to work with the fast.ai library.
+              </p>
+            </div>
+            <div class="flex_item">
+              <p>Overall, this experience</p>
+            </div>
+
+            <div class="flex_item">
+              <p>Please upload an image that you'd like to see classified as a monster or not.</p>
+            </div>
+
+
+
+            <h4></h4>
+
+            <h4>Due to limited time, the model has only been trained for .. with ....</h4>
+
+
+            <div class="center_me">
+            {monsterImage.preview && <img src={monsterImage.preview} width='100' height='100' />}
+            </div>
+            <hr></hr>
+
+            <form onSubmit={(event) => { this.handleSubmit(event) }}>
+
             
-            
-        <div id="header">
-          <p><span>Monster Classifer</span></p>
-        </div>
-        <h4>This was built using fast.ai...</h4>
-
-        <h4>Please upload an image that you'd like to see classified as a monster or not.</h4>
-
-        <h4>Due to limited time, the model has only been trained for .. with ....</h4>
-
-        {monsterImage.preview && <img src={monsterImage.preview} width='100' height='100' />}
-
-        <hr></hr>
-
-        
-
-       
+              <label className={Button.classes}>
+                <input type='file' name='file' onChange={(event) => { this.handleFileChange(event); }
+                } />
+              </label>
 
 
+              <Loader/>
+              <Button variant="text" type='submit' startIcon={<CloudUploadIcon />}>Submit</Button>
+            </form>
 
-        <form onSubmit={(event) => {this.handleSubmit(event)} }>
-
-        <label className={Button.classes}>
-        <input type='file' name='file' onChange={(event) => { this.handleFileChange(event); }
-          }/>
-        </label>
-          
-
-          <Button variant="text" type='submit' startIcon={<CloudUploadIcon />}>Submit</Button>
-          </form>
-
-          <hr></hr>
-          <form onSubmit={(event) => {this.handleSubmit(event)} }>
-            <FileButton onChange={(event) => { this.handleFileChange(event); }} accept="image/png,image/jpeg">
-            {(props) => <Button {...props}>Upload image</Button>}
-          </FileButton>
-
-          </form>
-
-          
-
-
-        <FileInput type='file' name='file' onChange={(event) => { 
-          this.handleFileChange(event); 
-        }
-          }>
- <input type='file' name='file' onChange={(event) => { this.handleFileChange(event); }
-          }></input>
-
-          </FileInput>
+            <hr></hr>
 
           </div>
 
-          <hr></hr>
-
-          <Button variant="text" type='submit' startIcon={<CloudUploadIcon />}>Submit</Button>
-
-
-
-          <FileButton type='file' name='file' onChange={(event) => { this.handleFileChange(event); }
-            } accept="image/png,image/jpeg">
-            {(props) => <Button {...props}>Upload image</Button>}
-          </FileButton>
-
-
-      {file && (
-        <Text size="sm" ta="center" mt="sm">
-          Picked file: {file}
-        </Text>
-      )}
-
-
-
-
-        
-
-
-
-        {status && <h4>{status}</h4>}
-        <h4>{status}</h4>
+          {status && <h4>{status}</h4>}
+          <h4>{status}</h4>
         </MantineProvider>
       </div>
-     
+
     );
   }
 }
 
 export default App;
+
+

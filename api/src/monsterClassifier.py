@@ -5,6 +5,10 @@ import PIL
 import sys
 import json
 
+print(sys.argv)
+filename = '/Users/gurdevsihra/Projects/MonsterClassifier/api/potentialMonsters/' + sys.argv[1]
+print("Hello world again" + filename)
+
 #print('Hello World')
 
 #print('Hello mload learner')
@@ -17,7 +21,7 @@ def classify_image(img):
     pred,idx,probs = learn.predict(img)
     return dict(zip(categories,map(float,probs)))
 
-im = PILImage.create('/Users/gurdevsihra/Projects/MonsterClassifier/api/src/gurdev.png')
+im = PILImage.create(filename)
 im.thumbnail((192,192))
 im
 #im = PIL.Image.new('gurdev.png',size=(200, 200))

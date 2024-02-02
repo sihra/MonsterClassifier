@@ -2,6 +2,10 @@ var config = require('./config');
 var Express = require("express");
 const mongodb = require("mongodb");
 const path = require("path");
+const fs = require('fs')
+const { promisify } = require('util')
+
+const unlinkAsync = promisify(fs.unlink)
 //const spawn = require("child_process");
 //var MongoClient = mongodb.MongoClient;
 // Allows any traffic from any IP address
@@ -62,28 +66,26 @@ app.post("/postMe", upload.single("file"), async function(req, res){
 
     try {
         const { spawn } = require('child_process');
-        const pythonProcess = await spawn('python3', ['./src/monsterClassifier.py']);
+        const pythonProcess = await spawn('python3', ['./src/monsterClassifier.py', req.file.filename]);
     
         pythonProcess.stdout.on('data', async (data) => {
             modelResults = data.toString();
             console.log(" Found data " + modelResults);
             if (modelResults.includes("Human")) {
-                humanProbs = parseFloat(modelResults.substring(modelResults.indexOf(':')+2,modelResults.lastIndexOf(',')));
-                monsterProbs = parseFloat(modelResults.substring(modelResults.lastIndexOf(':')+2,modelResults.lastIndexOf('}')));
+                humanProbs = parseFloat(modelResults.substring(modelResults.indexOf(':')+2,modelResults.lastIndexOf(','))).toFixed(2) * 100;
+                monsterProbs = parseFloat(modelResults.substring(modelResults.lastIndexOf(':')+2,modelResults.lastIndexOf('}'))).toFixed(2) * 100;
                 console.log("Human Probability: " + humanProbs)
                 console.log("Monster Probability: " + monsterProbs)
 
-
                 if(humanProbs > monsterProbs) {
-                    res.write(JSON.stringify("Human"))
+                    res.write(JSON.stringify("Human Probability: " + humanProbs +"% change this is a Human"))
                 } else {
-                    res.write(JSON.stringify("Monster"))
+                    res.write(JSON.stringify("Jeepers! Monster Probability" + monsterProbs +"%...n"))
                 }
                 console.log(JSON.stringify(data.toString()))
-                //res.json(data.toString())
-                //res.write(JSON.stringify(data.toString()))
-                //res.writeHead(200, { 'Content-Type': 'application/json' });
+                await unlinkAsync(req.file.path)
                 res.end();
+                
             }
         });
     
@@ -91,5 +93,5 @@ app.post("/postMe", upload.single("file"), async function(req, res){
     } catch (e) {
         res.end(e.message || e.toString());
     }
-    console.log("Ouch! You hit me!!");
+    console.log(req.file.filename);
   });
