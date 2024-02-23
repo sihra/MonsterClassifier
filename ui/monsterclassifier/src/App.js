@@ -15,7 +15,7 @@ class App extends Component {
     }
   }
 
-  API_URL = "http://localhost:5038"
+  API_URL = "https://monsterclassifier-1.onrender.com"
 
   async handleSubmit(e) {
     e.preventDefault()
@@ -24,6 +24,8 @@ class App extends Component {
     data.append("file", this.state.monsterImage.data)
 
     this.setState({ status: "... Detecting Monster ..." })
+
+
 
     fetch(this.API_URL + "/classify", {
       method: "POST",
