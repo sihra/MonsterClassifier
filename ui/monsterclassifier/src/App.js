@@ -98,6 +98,8 @@ class App extends Component {
               <h4>Please upload an image that you'd like to see classified as a monster or not. Submit when you're ready...</h4>
             </div>
 
+            <h4>{status}</h4>
+
             <div class="center_me">
               {monsterImage.preview && <img src={monsterImage.preview} width='100' height='100' />}
             </div>
@@ -116,7 +118,7 @@ class App extends Component {
 
           </div>
 
-          <h4>{status}</h4>
+          
           &nbsp; 
           &nbsp; 
         </MantineProvider>
