@@ -115,6 +115,8 @@ class App extends Component {
           </div>
 
           <h4>{status}</h4>
+          &nbsp; 
+          &nbsp; 
         </MantineProvider>
       </div>
 
