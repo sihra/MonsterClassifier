@@ -1,4 +1,3 @@
-var config = require('./config');
 var Express = require("express");
 const path = require("path");
 const fs = require('fs')
@@ -11,7 +10,7 @@ const multer = require("multer");
 
 var app = Express();
 app.use(cors());
-app.listen(config.webPort, () => { })
+app.listen(process.env.PORT || 5038, () => { })
 
 //Setting storage engine for multer
 // ./potentialMonsters will be available for users to upload images to
