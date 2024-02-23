@@ -39,6 +39,10 @@ const upload = multer({
     },
 });
 
+app.get('/', function (req, res) {
+    res.send("Hello World")
+  });
+
 app.post("/classify", upload.single("file"), async function (req, res) {
     try {
         const { spawn } = require('child_process');
