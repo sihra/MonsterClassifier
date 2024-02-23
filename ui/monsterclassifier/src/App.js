@@ -1,152 +1,129 @@
 import './App.css';
 import { Component } from 'react';
 import Button from '@mui/material/Button';
-
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { Loader, MantineProvider } from '@mantine/core';
 
 class App extends Component {
 
   constructor(props) {
-    // Initialize parent constructor as well
     super(props);
     this.state = {
-      urls: [],
-      monsterImage: { preview: "", data: ""},
+      monsterImage: { preview: "", data: "" },
       status: "",
+      file: ""
     }
   }
 
   API_URL = "http://localhost:5038"
 
   async handleSubmit(e) {
-    //const [count, setCount] = useState(0);
     e.preventDefault()
-   
+
     const data = new FormData();
-
-    const peep = this.status
-
-    //alert({peep})
-
-    //alert("hi");
-    
     data.append("file", this.state.monsterImage.data)
-    
 
     this.setState({ status: "... Detecting Monster ..." })
 
-    fetch(this.API_URL + "/postMe", {
+    fetch(this.API_URL + "/classify", {
       method: "POST",
       body: data,
     }).then(res => res.json()).then((result) => {
-      //this.status = (result.statusText)
       this.setState({ status: result })
-      //this.refreshPage();
     })
-    console.log("Submitted")
+    console.log("User Image Submitted")
   }
 
   async handleFileChange(e) {
-    console.log("File Change")
-    // const img = {
-    //   preview: URL.createObjectURL(e.target.files[0]),
-    //   data: e.target.files[0],
-    // }
-    // this.setState({ monsterImage: img })
-
-
-
-    // this.setState((status) =>{
-    //   return "testing fured"
-    // });
-
-    const peep = this.status
-
-    //alert({peep} + " hello")
+    console.log("File Change Detected")
 
     this.setState({
       monsterImage: {
-        //...this.state.monsterImage, 
-        preview: URL.createObjectURL(e.target.files[0]), 
+        preview: URL.createObjectURL(e.target.files[0]),
         data: e.target.files[0]
-        }
-    },
-    function() {
-      console.log("setState completed", this.state)
+      }
     });
-
-    
-    //this.monsterImage = img
-    console.log("File Change")
-
   }
-
-  async humanClick() {
-    var image = document.getElementById("imageUpload").value;
-    console.log("Uploading Image " + image)
-    const data = new FormData();
-    data.append("image", image);
-    data.append("classification", "human");
-
-    fetch(this.API_URL + "/postMonster", {
-      method: "POST",
-      body: data,
-    }).then(res => res.json()).then((result) => {
-      alert(result);
-      //this.refreshPage();
-    })
-  }
-
-  async monsterClick() {
-    var image = document.getElementById("imageUpload").value;
-    console.log("Uploading Image " + image)
-    const data = new FormData();
-    data.append("image", image);
-    data.append("classification", "monster");
-
-    fetch(this.API_URL + "/postMonster", {
-      method: "POST",
-      body: data,
-    }).then(res => res.json()).then((result) => {
-      alert(result);
-      //this.refreshPage();
-    })
-  }
-
-  // async refreshPage() {
-  //   fetch(this.API_URL + "/Humans").then(response => response.json())
-  //     .then(data => {
-  //       this.setState({ urls: data })
-  //     })
-  // }
-  // imageUpload = File Upload for photo
 
   render() {
     const { monsterImage, status } = this.state
     return (
+
       <div className="App">
-        <h1>Monster Classifier</h1>
-        <h4>This was built using fast.ai...</h4>
 
-        <h4>Please upload an image that you'd like to see classified as a monster or not.</h4>
+        <MantineProvider withGlobalStyles withNormalizeCSS>
+          <style>@import url('https://fonts.cdnfonts.com/css/horror-type');</style>
 
-        <h4>Due to limited time, the model has only been trained for .. with ....</h4>
+          <div class="flex_box">
 
-        {monsterImage.preview && <img src={monsterImage.preview} width='100' height='100' />}
+            <div id="header">
+              <p><span>Monster Classifier</span></p>
+            </div>
 
-        <hr></hr>
-        <form onSubmit={(event) => {this.handleSubmit(event)} }>
-          <input type='file' name='file' onChange={(event) => { this.handleFileChange(event); }
-          }></input>
+            <h3>Built by <a href="https://www.linkedin.com/in/gurdevsihra/">Gurdev Sihra</a></h3>
+            <div class="flex_item">
+              <p>
+                Monster Classifier is a web application that detects where a user uploaded image is a Monster 👹 or Human 👩🏽!
+              </p>
+            </div>
 
-        
-          <Button variant="text" type='submit'>Submit</Button>
+            <div class="flex_item">
+              <p>
+                The server side was built with Node.js, Express, and React.js. The machine learning model was built using <a href="https://course.fast.ai/Lessons/lesson1.html">Fast.ai's Practical Deep Learning For Coders</a> Lesson 1.
+                I've followed along with the classes by creating <a href="https://www.kaggle.com/gsihra">Kaggle Notebooks</a> to work with the Fast.ai library.
+              </p>
+            </div>
 
-        </form>
-        {status && <h4>{status}</h4>}
-        <h4>{status}</h4>
+            <div class="flex_item">
+              <p>
+                Monster Classifier uses Fast.ai's resnet18 neural network model which is integrated with a large collection of data vison models in the world (at the time). This makes it a great pick because it's a general model and can handle a variety of data.
+
+
+                I created a <a href="https://docs.fast.ai/data.block.html#datablock">DataBlock</a> which inputs data into this model and outlines the type of data we're expecting back (categories).
+
+                A <a href="https://docs.fast.ai/vision.learner.html">Vision Learner</a> was used to combine the model and data that I used to train it with. Then by using the <a href="which deploys my model and returns the probability of the image uploaded being a monster!">predict method</a>, MonsterClassifier is able to return the probability of the image uploaded being a monster!
+              </p>
+            </div>
+
+            <div class="flex_item">
+              <p>Overall, this lesson helped me understand how to use Fast.ai's tool to use and train a model, but a lot of my knowledge behind how it was created and fine tuned is fuzzy.
+                As I continue with the course I believe I'll understand the fundamental better.
+                The documentation is bare bones but I found a lot of help through the forums.
+              </p>
+            </div>
+
+            <div class="flex_item">
+              <h4>Please upload an image that you'd like to see classified as a monster or not. Submit when you're ready...</h4>
+            </div>
+
+            <div class="center_me">
+              {monsterImage.preview && <img src={monsterImage.preview} width='100' height='100' />}
+            </div>
+            <hr></hr>
+
+            <form onSubmit={(event) => { this.handleSubmit(event) }}>
+
+              <label className={Button.classes}>
+                <input type='file' name='file' onChange={(event) => { this.handleFileChange(event); }
+                } />
+              </label>
+              <Button variant="text" type='submit' startIcon={<CloudUploadIcon />}>Submit</Button>
+            </form>
+
+            <hr></hr>
+
+          </div>
+
+          <h4>{status}</h4>
+          &nbsp; 
+          &nbsp; 
+        </MantineProvider>
       </div>
+
     );
   }
 }
 
 export default App;
+
+
