@@ -51,7 +51,7 @@
 }
 
 #header {
-  background:url("/Users/gurdevsihra/Projects/MonsterClassifier/ui/monsterclassifier/public/webpage.png");
+  background:url("../public/webpage.png");
   width: 100%;
   background-position: center;
   padding: 1px 1px;
