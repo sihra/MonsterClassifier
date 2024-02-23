@@ -10,7 +10,9 @@ const multer = require("multer");
 
 var app = Express();
 app.use(cors());
-app.listen(process.env.PORT || 5038, () => { })
+app.listen(process.env.PORT || 10000, () => { 
+    console.log(`MonsterClassifier listening on port ${process.env.PORT}`)
+})
 
 //Setting storage engine for multer
 // ./potentialMonsters will be available for users to upload images to
@@ -44,6 +46,7 @@ app.get('/', function (req, res) {
   });
 
 app.post("/classify", upload.single("file"), async function (req, res) {
+    console.log(`Hit classify with request ${req}`)
     try {
         const { spawn } = require('child_process');
         const pythonProcess = await spawn('python3', ['./src/monsterClassifier.py', req.file.filename]);
