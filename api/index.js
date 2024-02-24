@@ -46,10 +46,12 @@ app.get('/', function (req, res) {
   });
 
 app.post("/classify", upload.single("file"), async function (req, res) {
-    console.log(`Hit classify with request ${req}`)
+    console.log(`Hit classify with request ${req.file.filename}`)
     try {
         const { spawn } = require('child_process');
+        console.log(`Going to spawn a process`)
         const pythonProcess = await spawn('python3', ['./src/monsterClassifier.py', req.file.filename]);
+        console.log(`Waiting console output`)
         pythonProcess.stdout.on('data', async (data) => {
             modelResults = data.toString();
             console.log(" Found data " + modelResults);
