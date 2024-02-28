@@ -61,7 +61,7 @@ app.post("/classify", upload.single("file"), async function (req, res) {
                 if (humanProbs > monsterProbs) {
                     res.write(JSON.stringify("Human Probability: " + humanProbs + "% change this is a Human"))
                 } else {
-                    res.write(JSON.stringify("Jeepers! Monster Probability" + monsterProbs + "%...n"))
+                    res.write(JSON.stringify("Jeepers! Monster Probability " + monsterProbs + "%"))
                 }
                 console.log(JSON.stringify(data.toString()))
                 await unlinkAsync(req.file.path)
