@@ -4,10 +4,14 @@ import torch
 import PIL
 import sys
 import json
+import os
 
-filename = '/Users/gurdevsihra/Projects/MonsterClassifier/api/potentialMonsters/' + sys.argv[1]
+learnerPath = os.path.dirname(__file__)
+monsterPath = os.path.dirname(learnerPath)
+filename = monsterPath + '/potentialMonsters/' + sys.argv[1]
+learner = learnerPath + '/model.pkl' 
 
-learn = load_learner('/Users/gurdevsihra/Projects/MonsterClassifier/api/src/model.pkl')
+learn = load_learner(learner)
 
 categories = ('Human','Monster')
 
