@@ -95,7 +95,7 @@ class App extends Component {
             </div>
 
             <div class="flex_item">
-              <h4>Please upload an image that you'd like to see classified as a monster or not. Submit when you're ready...</h4>
+              <h4>Please upload an image that you'd like to see classified as a monster or not, it will take around a minute. Submit when you're ready...</h4>
             </div>
 
             <h4>{status}</h4>
