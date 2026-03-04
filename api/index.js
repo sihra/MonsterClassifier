@@ -47,29 +47,57 @@ app.get('/', function (req, res) {
 
 app.post("/classify", upload.single("file"), async function (req, res) {
     console.log(`Hit classify with request ${req.file.filename}`)
-    try {
-        const { spawn } = require('child_process');
-        console.log(`Going to spawn a process`)
-        const pythonProcess = await spawn('python3', ['./src/monsterClassifier.py', req.file.filename]);
-        console.log(`Waiting console output`)
-        pythonProcess.stdout.on('data', async (data) => {
-            modelResults = data.toString();
-            console.log(" Found data " + modelResults);
-            if (modelResults.includes("Human")) {
-                humanProbs = parseFloat(modelResults.substring(modelResults.indexOf(':') + 2, modelResults.lastIndexOf(','))).toFixed(2) * 100;
-                monsterProbs = parseFloat(modelResults.substring(modelResults.lastIndexOf(':') + 2, modelResults.lastIndexOf('}'))).toFixed(2) * 100;
-                if (humanProbs > monsterProbs) {
-                    res.write(JSON.stringify("Human Probability: " + humanProbs + "% change this is a Human"))
-                } else {
-                    res.write(JSON.stringify("Jeepers! Monster Probability " + monsterProbs + "%"))
-                }
-                console.log(JSON.stringify(data.toString()))
-                await unlinkAsync(req.file.path)
-                res.end();
 
-            }
+    const runClassifier = () => {
+        return new Promise((resolve, reject) => {
+            const { spawn } = require('child_process');
+            const pythonProcess = spawn('python3', ['./src/monsterClassifier.py', req.file.filename]);
+            
+            let resultData = "";
+            let errorData = "";
+
+            pythonProcess.stdout.on('data', (data) => {
+                resultData += data.toString();
+            });
+
+            pythonProcess.stderr.on('data', (data) => {
+                errorData += data.toString();
+            });
+
+            pythonProcess.on('close', (code) => {
+                if (code !== 0) {
+                    reject(errorData || `Process exited with code ${code}`);
+                } else {
+                    resolve(resultData);
+                }
+            });
         });
+    };
+    try {
+        const modelResults = await runClassifier();
+        console.log("Found data: " + modelResults);
+        if (modelResults.includes("Human")) {
+            const humanProbs = (parseFloat(modelResults.substring(modelResults.indexOf(':') + 2, modelResults.lastIndexOf(','))) * 100).toFixed(2);
+            const monsterProbs = (parseFloat(modelResults.substring(modelResults.lastIndexOf(':') + 2, modelResults.lastIndexOf('}'))) * 100).toFixed(2);
+    
+            let message = (parseFloat(humanProbs) > parseFloat(monsterProbs)) 
+                ? `Human Probability: ${humanProbs}% change this is a Human` 
+                : `Jeepers! Monster Probability ${monsterProbs}%`;
+    
+            return res.json(message); 
+        } 
+        
+        return res.status(400).send("Unexpected model output format.");
+    
     } catch (e) {
-        res.end(e.message || e.toString());
+        console.error("Classification Error:", e);
+        if (!res.headersSent) {
+            return res.status(500).send("Error processing image: " + e.toString());
+        }
+    } finally {
+        if (req.file) {
+            await unlinkAsync(req.file.path).catch(err => console.error("Cleanup error:", err));
+        }
     }
+    
 });

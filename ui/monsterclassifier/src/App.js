@@ -15,7 +15,7 @@ class App extends Component {
     }
   }
 
-  API_URL = "https://monsterclassifier-1.onrender.com"
+  API_URL = "http://localhost:1000"
 
   async handleSubmit(e) {
     e.preventDefault()
