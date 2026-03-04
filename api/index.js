@@ -48,6 +48,7 @@ app.get('/', function (req, res) {
 app.post("/classify", upload.single("file"), async function (req, res) {
     console.log(`Hit classify with request ${req.file.filename}`)
 
+    // This is promising that the python script will execute and return a response
     const runClassifier = () => {
         return new Promise((resolve, reject) => {
             const { spawn } = require('child_process');
@@ -74,9 +75,11 @@ app.post("/classify", upload.single("file"), async function (req, res) {
         });
     };
     try {
+        // Wait for the Promise to complete
         const modelResults = await runClassifier();
         console.log("Found data: " + modelResults);
         if (modelResults.includes("Human")) {
+            // Calculating the probability of Human | Monster
             const humanProbs = (parseFloat(modelResults.substring(modelResults.indexOf(':') + 2, modelResults.lastIndexOf(','))) * 100).toFixed(2);
             const monsterProbs = (parseFloat(modelResults.substring(modelResults.lastIndexOf(':') + 2, modelResults.lastIndexOf('}'))) * 100).toFixed(2);
     
@@ -87,7 +90,8 @@ app.post("/classify", upload.single("file"), async function (req, res) {
             return res.json(message); 
         } 
         
-        return res.status(400).send("Unexpected model output format.");
+        // If we don't get an expected response, we return 500
+        return res.status(500).send("Unexpected model output format.");
     
     } catch (e) {
         console.error("Classification Error:", e);
@@ -95,6 +99,7 @@ app.post("/classify", upload.single("file"), async function (req, res) {
             return res.status(500).send("Error processing image: " + e.toString());
         }
     } finally {
+        // Ensuring that the file is deleted/cleaned up
         if (req.file) {
             await unlinkAsync(req.file.path).catch(err => console.error("Cleanup error:", err));
         }
